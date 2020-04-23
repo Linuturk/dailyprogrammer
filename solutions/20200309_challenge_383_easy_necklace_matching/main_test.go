@@ -55,3 +55,30 @@ func TestRepeats(t *testing.T) {
 		})
 	}
 }
+
+func TestCanoicalize(t *testing.T) {
+
+	testcases := []struct {
+		a        string
+		expected string
+	}{
+		{"abc", "abc"},
+		{"abcabcabc", "abcabcabc"},
+		{"abcabcabcx", "abcabcabcx"},
+		{"aaaaaa", "aaaaaa"},
+		{"fish", "fish"},
+		{"apple", "apple"},
+		{"mississippi", "imississipp"},
+		{"racecar", "acecarr"},
+		{"dcba", "adcb"},
+	}
+
+	for _, tt := range testcases {
+		t.Run(tt.a, func(t *testing.T) {
+			got := canonicalize(tt.a)
+			if got != tt.expected {
+				t.Errorf("'%v', got %v, wanted %v", tt.a, got, tt.expected)
+			}
+		})
+	}
+}

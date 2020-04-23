@@ -53,6 +53,9 @@ Optional Bonus 2
 
 There is exactly one set of four words in the enable1 word list that all
 describe the same necklace. Find the four words.
+
+https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt
+
 */
 package main
 
@@ -109,6 +112,37 @@ func repeats(a string) int {
 
 func shiftLetter(a string) string {
 	return a[1:] + a[:1]
+}
+
+// taken from a solution on reddit by skeeto
+// to try to understand it
+// https://old.reddit.com/r/dailyprogrammer/comments/ffxabb/20200309_challenge_383_easy_necklace_matching/fk1gzsp/
+func canonicalize(s string) string {
+
+	// this seems to produce a string that's easily sliced for a comparison
+	// below by appending the string to itself, but leaving off the last letter
+	// canonicalizing 'fish' by 'fish' + 'fis' => 'fishfis'
+	c := s + s[:len(s)-1]
+	//fmt.Printf("canonicalizing '%v' by '%v' + '%v' => '%v'\n", s, s, s[:len(s)-1], c)
+	best := s
+	//fmt.Printf("Best '%v'\n", s)
+
+	// then we loop over the string, moving a letter to the end of the necklace
+	// for each iteration. The c[i:i+len(s)] performs the rotation based on the
+	// for loop iteration count, which starts at 1.
+	for i := 1; i < len(s); i++ {
+		//fmt.Printf("l%v checking if '%v' < best '%v'\n", i, c[i:i+len(s)], best)
+		// this comparison seems to be an alphabetical comparison, effectively
+		// giving a unique primary key to identify words that can produce
+		// the same necklace given the rotation specified
+		// From the spec: String values are comparable and ordered, lexically
+		// byte-wise.
+		if c[i:i+len(s)] < best {
+			best = c[i : i+len(s)]
+			//fmt.Printf("l%v New Best '%v'\n", i, best)
+		}
+	}
+	return best
 }
 
 func main() {
